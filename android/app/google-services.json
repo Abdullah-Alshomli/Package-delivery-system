@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "493834556913",
+    "project_id": "ics321-project-df7ce",
+    "storage_bucket": "ics321-project-df7ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493834556913:android:0aff0b6c10007c444fa050",
+        "android_client_info": {
+          "package_name": "com.ICS321Project.ics_321_project_database"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493834556913-74umeoib40nokq1s8papkjf8umup37me.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwjFUQbVy6UbZ0gnjZf7X4UULy9rrFfCk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493834556913-74umeoib40nokq1s8papkjf8umup37me.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
