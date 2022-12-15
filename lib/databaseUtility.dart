@@ -2,7 +2,6 @@ import 'dart:core';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'myMethods.dart';
 
 /*setting up firebase*/
 FirebaseFirestore firestore = FirebaseFirestore.instance;

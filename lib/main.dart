@@ -2,14 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'Login.dart';
 import 'databaseUtility.dart';
-import 'myMethods.dart';
+import 'testt.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
   print("__________________________________________________________________");
-  print(getPackages("123456"));
+  newsCollection2();
 
   print("__________________________________________________________________");
 }
