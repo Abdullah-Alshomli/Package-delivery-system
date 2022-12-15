@@ -1,11 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'Login.dart';
+import 'databaseUtility.dart';
+import 'myMethods.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
+  print("__________________________________________________________________");
+  print(getPackages("123456"));
+
+  print("__________________________________________________________________");
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +30,6 @@ class MyApp extends StatelessWidget {
         '/3': (context) => CSendPackage(),
         '/4': (context) => CUpdateInformation(),
         '/5': (context) => CPay(),
-
         //Employee UI main
         '/6': (context) => EControl(),
         //Employee UI pages1
