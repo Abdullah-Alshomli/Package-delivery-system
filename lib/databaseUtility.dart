@@ -57,8 +57,64 @@ Future register(String name, String email, String password, String country,
 //  Report
 //TODO Type Report
 //TODO categories/locations/status Report
-//TODO Customer packages Report
+//Customer packages Report
+Future<List<List<String>>> getAllcustomerPackages(String email) async {
+  List docList = [];
+  List jsonList = [];
+  List<String> packagesIDlist = await getUserPackagsIDs(email);
+
+  List<List<String>> finalList = [];
+
+  await Future.delayed(Duration(seconds: 5));
+
+  try {
+    final CollectionReference shippedPackages =
+        firestore.collection(' shipped packages');
+    await shippedPackages
+        .where("id", whereIn: packagesIDlist)
+        .get()
+        .then((value) {
+      // print(value.docs.toList());
+
+      for (final child in value.docs) {
+        docList.add(child.id);
+      }
+    });
+
+    for (final index in docList) {
+      final docRef = shippedPackages.doc(index);
+      jsonList.add(await docRef.get().then((DocumentSnapshot doc) {
+        // print(doc.data());
+        final docData = doc.data();
+        return docData;
+      }));
+    }
+
+    for (var json in jsonList) {
+      final Map<String, dynamic> package = json;
+      // print("here");
+      finalList.add([
+        json["id"],
+        json["barcode"],
+        json["country"],
+        json["reigon"],
+        json["city"],
+        json["current package status"],
+        json["final delivery date"]
+      ]);
+    }
+
+    print(await jsonList);
+
+    return await finalList;
+  } catch (e) {
+    print(e.toString());
+    throw ('sth is wrong');
+  }
+}
+
 //TODO lost/delayed/delivered Report
+
 //Payment Report
 Future<List<List<String>>> getPaymentReport() async {
   List docList = [];
