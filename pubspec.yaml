@@ -40,6 +40,9 @@ dependencies:
   #Firebase Database
   cloud_firestore: ^4.2.0
 
+  #email_Sender:
+  url_launcher: ^6.1.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

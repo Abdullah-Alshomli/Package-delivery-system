@@ -2,6 +2,7 @@ import 'dart:core';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /*setting up firebase*/
 FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -191,6 +192,10 @@ void deleteCustomer(String email) {
 }
 
 //TODO Send Email
+void sendEmail(String email) {
+  String url = "mailto:$email?subject=Your package &body=your package is ready";
+  launch(url);
+}
 
 /* User*/
 //Your Packages
@@ -269,8 +274,12 @@ void updateInformation(String email, String name, String password,
   });
 }
 
-//TODO Pay
-void pay(String packageID) {}
+//Pay
+void pay(String email, String packageID) {
+  final customerOwnToEdit =
+      firestore.collection('customer own ').doc(email + " " + packageID);
+  customerOwnToEdit.update({'pay status': "payed"});
+}
 
 // for refrence
 void ttest() {
