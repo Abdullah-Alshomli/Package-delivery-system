@@ -150,7 +150,54 @@ void deletePackage(String packageID) {
       firestore.collection(' shipped packages').doc(packageID);
   notWantedPackage.delete();
 }
-//TODO Trace Packages
+
+//Trace Packages
+Future<String> getTracePackage(String id) async {
+  List docList = [];
+  List jsonList = [];
+
+  await Future.delayed(Duration(seconds: 5));
+
+  try {
+    final CollectionReference shippedPackages =
+        firestore.collection(' shipped packages');
+    await shippedPackages.where("id", isEqualTo: id).get().then((value) {
+      // print(value.docs.toList());
+
+      for (final child in value.docs) {
+        docList.add(child.id);
+      }
+    });
+
+    for (final index in docList) {
+      final docRef = shippedPackages.doc(index);
+      jsonList.add(await docRef.get().then((DocumentSnapshot doc) {
+        // print(doc.data());
+        final docData = doc.data();
+        return docData;
+      }));
+    }
+
+    // for (String id in packagesIds) {
+    //   shippedPackages.where("is", isEqualTo: id).get().then((value) {
+    //     value.docs.forEach((element) {
+    //       packagesStatus.add(element['current package status']);
+    //     });
+    //   });
+    // }
+    String status = "";
+    for (var json in jsonList) {
+      status = json["current package status"];
+    }
+
+    print(docList);
+    print(jsonList);
+    return await status;
+  } catch (e) {
+    print(e.toString());
+    throw ('sth is wrong');
+  }
+}
 
 //    Customer
 //Add Customer
@@ -279,6 +326,13 @@ void pay(String email, String packageID) {
   final customerOwnToEdit =
       firestore.collection('customer own ').doc(email + " " + packageID);
   customerOwnToEdit.update({'pay status': "payed"});
+}
+
+//TODO Receive Package
+void receivePackage(String packageID, String email) {
+  final customerOwnToEdit =
+      firestore.collection('customer own ').doc(email + " " + packageID);
+  customerOwnToEdit.update({'receive': "true"});
 }
 
 // for refrence
