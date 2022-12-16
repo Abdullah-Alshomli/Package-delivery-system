@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'databaseUtility.dart';
+import 'testt.dart';
+
+String s = "blablabla";
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -26,6 +30,7 @@ class _Login extends State<Login> {
             SizedBox(
               height: 20,
             ),
+            Text(s),
             TextField(),
             TextField(),
             ElevatedButton(onPressed: () {}, child: Text("Submet"))

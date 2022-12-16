@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'Login.dart';
 import 'databaseUtility.dart';
 import 'testt.dart';
+import 'EPaymentReport.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
   print("__________________________________________________________________");
-  newsCollection2();
-
+  print(await getPackages("email@gmail.com"));
   print("__________________________________________________________________");
 }
 
@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       routes: {
         //main UI pages
         '/': (context) => Login(),
+        '/12': (context) => EPaymentReport(),
         //'/0': (context) => Sign(),
 
         /* //Customer UI pages
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
         '/20': (context) => EAddCustomer(),*/
       },
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/12',
     );
   }
 }

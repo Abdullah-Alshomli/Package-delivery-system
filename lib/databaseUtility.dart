@@ -193,25 +193,18 @@ void deleteCustomer(String email) {
 //TODO Send Email
 
 /* User*/
-//TODO Your Packages
-List getPackages(String email) {
-  List<String> packagesIDs = [];
-  List<String> packagesStatus = [];
-  List<List<String>> idAndStatus = [];
+//Your Packages
+Future<List> getPackages(String email) async {
+  Future<List<String>> packagesIDs = getUserPackagsIDs(email);
+  Future<String> statusList;
+  List<List<String>> statusAndID = [];
 
-  // adding all the packages from customer own
-  FirebaseFirestore.instance
-      .collection('customer own ')
-      .get()
-      .then((QuerySnapshot querySnapshot) {
-    querySnapshot.docs.forEach((doc) {
-      print(doc["package number"]);
-      String x = doc["package number"];
-      packagesIDs.add(x);
-      print(x);
-    });
-  });
-  return packagesIDs;
+  for (String id in await packagesIDs) {
+    statusList = getPackagsStatus(id);
+    statusAndID.add([id, await statusList]);
+  }
+
+  return statusAndID;
 }
 
 //Send Package
@@ -275,7 +268,9 @@ void updateInformation(String email, String name, String password,
     'zipcode': zipcode
   });
 }
+
 //TODO Pay
+void pay(String packageID) {}
 
 // for refrence
 void ttest() {
@@ -288,4 +283,211 @@ void ttest() {
       print(doc["city"]);
     });
   });
+}
+
+// new methods
+
+Future<List<String>> getPaymentPackagsID() async {
+  List docList = [];
+  List customerOwnList = [];
+  List<String> packagesIds = [];
+  List<String> packagesStatus = [];
+
+  await Future.delayed(Duration(seconds: 5));
+
+  try {
+    final CollectionReference customerOwn =
+        firestore.collection('customer own ');
+    await customerOwn.get().then((value) {
+      // print(value.docs.toList());
+
+      for (final child in value.docs) {
+        docList.add(child.id);
+      }
+    });
+
+    for (final index in docList) {
+      final docRef = customerOwn.doc(index);
+      customerOwnList.add(await docRef.get().then((DocumentSnapshot doc) {
+        // print(doc.data());
+        final docData = doc.data();
+        return docData;
+      }));
+    }
+    // print(docList);
+    // print(customerOwnList);
+
+    // adding all the ids for the payed packages
+    for (var json in customerOwnList) {
+      final Map<String, dynamic> customerOwn = json;
+      // print("here");
+      packagesIds.add(customerOwn['package number']);
+    }
+
+    // final CollectionReference shippedPackages =
+    //     firestore.collection(' shipped packages');
+    //
+    // for (String id in packagesIds) {
+    //   shippedPackages.where("is", isEqualTo: id).get().then((value) {
+    //     value.docs.forEach((element) {
+    //       packagesStatus.add(element['current package status']);
+    //     });
+    //   });
+    // }
+
+    return await packagesIds;
+  } catch (e) {
+    print(e.toString());
+    throw ('sth is wrong');
+  }
+}
+
+Future<String> getPackagsStatus(String id) async {
+  List docList = [];
+  List jsonList = [];
+
+  await Future.delayed(Duration(seconds: 5));
+
+  try {
+    final CollectionReference shippedPackages =
+        firestore.collection(' shipped packages');
+    await shippedPackages.where("id", isEqualTo: id).get().then((value) {
+      // print(value.docs.toList());
+
+      for (final child in value.docs) {
+        docList.add(child.id);
+      }
+    });
+
+    for (final index in docList) {
+      final docRef = shippedPackages.doc(index);
+      jsonList.add(await docRef.get().then((DocumentSnapshot doc) {
+        // print(doc.data());
+        final docData = doc.data();
+        return docData;
+      }));
+    }
+
+    // for (String id in packagesIds) {
+    //   shippedPackages.where("is", isEqualTo: id).get().then((value) {
+    //     value.docs.forEach((element) {
+    //       packagesStatus.add(element['current package status']);
+    //     });
+    //   });
+    // }
+    String status = "";
+    for (var json in jsonList) {
+      status = json["current package status"];
+    }
+
+    print(docList);
+    print(jsonList);
+    return await status;
+  } catch (e) {
+    print(e.toString());
+    throw ('sth is wrong');
+  }
+}
+
+Future<List<String>> getUserPackagsIDs(String email) async {
+  List docList = [];
+  List customerOwnList = [];
+  List<String> packagesIds = [];
+  List<String> packagesStatus = [];
+
+  await Future.delayed(Duration(seconds: 5));
+
+  try {
+    final CollectionReference customerOwn =
+        firestore.collection('customer own ');
+    await customerOwn.where("email", isEqualTo: email).get().then((value) {
+      // print(value.docs.toList());
+
+      for (final child in value.docs) {
+        docList.add(child.id);
+      }
+    });
+
+    for (final index in docList) {
+      final docRef = customerOwn.doc(index);
+      customerOwnList.add(await docRef.get().then((DocumentSnapshot doc) {
+        // print(doc.data());
+        final docData = doc.data();
+        return docData;
+      }));
+    }
+    // print(docList);
+    // print(customerOwnList);
+
+    // adding all the ids for the payed packages
+    for (var json in customerOwnList) {
+      final Map<String, dynamic> customerOwn = json;
+      // print("here");
+      packagesIds.add(customerOwn['package number']);
+    }
+
+    // final CollectionReference shippedPackages =
+    //     firestore.collection(' shipped packages');
+    //
+    // for (String id in packagesIds) {
+    //   shippedPackages.where("is", isEqualTo: id).get().then((value) {
+    //     value.docs.forEach((element) {
+    //       packagesStatus.add(element['current package status']);
+    //     });
+    //   });
+    // }
+
+    return await packagesIds;
+  } catch (e) {
+    print(e.toString());
+    throw ('sth is wrong');
+  }
+}
+
+Future<List<List<String>>> getPaymentPackagsIDandStatus() async {
+  List docList = [];
+  List customerOwnList = [];
+  List<String> packagesIds = [];
+  List<List<String>> packagesIdStatus = [];
+
+  await Future.delayed(Duration(seconds: 5));
+
+  try {
+    final CollectionReference customerOwn =
+        firestore.collection('customer own ');
+    await customerOwn.get().then((value) {
+      // print(value.docs.toList());
+
+      for (final child in value.docs) {
+        docList.add(child.id);
+      }
+    });
+
+    for (final index in docList) {
+      final docRef = customerOwn.doc(index);
+      customerOwnList.add(await docRef.get().then((DocumentSnapshot doc) {
+        // print(doc.data());
+        final docData = doc.data();
+        return docData;
+      }));
+    }
+    // print(docList);
+    // print(customerOwnList);
+
+    // adding all the ids for the payed packages
+    for (var json in customerOwnList) {
+      final Map<String, dynamic> customerOwn = json;
+      // print("here");
+      packagesIds.add(customerOwn['package number']);
+    }
+
+    for (var i in await packagesIds) {
+      packagesIdStatus.add([i, (await getPackagsStatus(i)).toString()]);
+    }
+
+    return await packagesIdStatus;
+  } catch (e) {
+    print(e.toString());
+    throw ('sth is wrong');
+  }
 }
