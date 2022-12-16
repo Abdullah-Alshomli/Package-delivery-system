@@ -59,19 +59,49 @@ Future register(String name, String email, String password, String country,
 //TODO categories/locations/status Report
 //TODO Customer packages Report
 //TODO lost/delayed/delivered Report
-//TODO Payment Report
-List<List<String>> getPaymentReport() {
-  List<List<String>> list = [];
-  print("----------start-----------");
-  firestore
-      .collection('customer own ')
-      .get()
-      .then((QuerySnapshot querySnapshot) {
-    querySnapshot.docs.forEach((doc) {
-      list.add([doc["email"], doc["package number"]]);
+//Payment Report
+Future<List<List<String>>> getPaymentReport() async {
+  List docList = [];
+  List jsonList = [];
+
+  List<List<String>> finalList = [];
+
+  await Future.delayed(Duration(seconds: 5));
+
+  try {
+    final CollectionReference customerOwn =
+        firestore.collection('customer own ');
+    await customerOwn
+        .where("pay status", isEqualTo: "payed")
+        .get()
+        .then((value) {
+      // print(value.docs.toList());
+
+      for (final child in value.docs) {
+        docList.add(child.id);
+      }
     });
-  });
-  return list;
+
+    for (final index in docList) {
+      final docRef = customerOwn.doc(index);
+      jsonList.add(await docRef.get().then((DocumentSnapshot doc) {
+        // print(doc.data());
+        final docData = doc.data();
+        return docData;
+      }));
+    }
+
+    for (var json in jsonList) {
+      final Map<String, dynamic> customerOwn = json;
+      // print("here");
+      finalList.add([json["package number"], json["email"]]);
+    }
+
+    return await finalList;
+  } catch (e) {
+    print(e.toString());
+    throw ('sth is wrong');
+  }
 }
 
 //    Package
@@ -238,7 +268,7 @@ void deleteCustomer(String email) {
   notWantedCustoemr.delete();
 }
 
-//TODO Send Email
+//Send Email
 void sendEmail(String email) {
   String url = "mailto:$email?subject=Your package &body=your package is ready";
   launch(url);
@@ -328,7 +358,7 @@ void pay(String email, String packageID) {
   customerOwnToEdit.update({'pay status': "payed"});
 }
 
-//TODO Receive Package
+//Receive Package
 void receivePackage(String packageID, String email) {
   final customerOwnToEdit =
       firestore.collection('customer own ').doc(email + " " + packageID);
