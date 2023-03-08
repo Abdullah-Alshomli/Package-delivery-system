@@ -1,5 +1,5 @@
-# ics_321_project_database
+# package delivery system 
 
-A new Flutter project using firebase database to make a package delivery system I worked on the database implementation
+A Flutter project using firebase database to make a package delivery system I worked on the database implementation
 
 
